@@ -7,6 +7,7 @@ import pandas as pd
 doc = requests.get('https://menus.tufts.edu/FoodPro%203.1.NET/shortmenu.aspx?sName=TUFTS+DINING&locationNum=11&locationName=Dewick-MacPhie+Dining+Center&naFlag=1&WeeksMenus=This+Week%27s+Menus&myaction=read&dtdate=7%2f27%2f2023')
 soup = BeautifulSoup(doc.text, features="html.parser")
 
+
 response = dict()
 
 for div in soup.findAll("div"):
@@ -25,19 +26,19 @@ for div in soup.findAll("div"):
 
         elif curr_div_class == "shortmenurecipes":
             food_item = [div.text.strip(), False, False, False] #Vegan, Vegetarian, Halal 
-            category_dict[category].append(food_item)
-
+            
             image = div.parent.parent.find("img")
-            print(image)
-            if image.contains("Vegan"):
-                print("True")
-                food_item[1] = True
-            elif image.contains("Vegetarian"):
-                food_item[2] = True
-            elif image.contains("Halal"):
-                food_item[3] = True
-            print("Why is this not printing?!?!")
+            if image != None:
+                image = str(image)
+                if "Vegan" in image:
+                    print("True")
+                    food_item[1] = True
+                elif "Vegetarian" in image:
+                    food_item[2] = True
+                elif "Halal" in image:
+                    food_item[3] = True
+            category_dict[category].append(food_item)
     except:
         continue
 
-# print(response)
+print(response)
