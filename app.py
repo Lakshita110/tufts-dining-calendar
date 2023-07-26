@@ -19,6 +19,7 @@ def main():
     date = pick_date()
     dining = TuftsDining()
     calendar = GoogleCalendar()
+    calendar.set_calendar_id()
     location = dining.set_location()
     text = dining.get_data(date)
     if text: 

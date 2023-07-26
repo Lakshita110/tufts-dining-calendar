@@ -17,9 +17,12 @@ class GoogleCalendar():
         self.creds = None
         self.service = None
         self.calendar_ids = []
-        self.build()
+        self.calendar_id = ""
+        self.__build()
+        self.__get_calendar_ids()
 
-    def build(self):
+    def __build(self):
+        creds = None
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
@@ -36,14 +39,14 @@ class GoogleCalendar():
             # Save the credentials for the next run
             with open('token.json', 'w') as token:
                 token.write(creds.to_json())
-        self.creds = creds
 
         #Build calendar service
         try:
             self.service = build('calendar', 'v3', credentials=creds)
+            print("Successfully built calendar connection!")
         except HttpError as error:
             print('An error occurred: %s' % error)
-    
+                
     def create_event(self, summary, description, date):
         event = {
         'summary': summary,
@@ -61,18 +64,32 @@ class GoogleCalendar():
 
     def insert_event(self, event):
         try: 
-            event = self.service.events().insert(calendarId='c_213014ceec5f49cfe5629b640b346cad447576e4f470a827496a46a5c5db208d@group.calendar.google.com', body=event).execute()
+            event = self.service.events().insert(calendarId=self.calendar_id, body=event).execute()
             print('Event created: %s' % (event.get('htmlLink')))
 
         except HttpError as error:
             print('An error occurred: %s' % error)
     
-    def get_calendar_ids(self):
+    def __get_calendar_ids(self):
         page_token = None
         while True:
             calendar_list = self.service.calendarList().list(pageToken=page_token).execute()
             for entry in calendar_list['items']:
-                self.calendar_ids.append([entry['summary'], entry['id']])
+                self.calendar_ids.append([entry['summary'].strip(), entry['id']])
             page_token = calendar_list.get('nextPageToken')
             if not page_token:
                 break
+
+    def set_calendar_id(self):
+        n = len(self.calendar_ids)
+        for i in range(n):
+            print(f"({i+1}): {self.calendar_ids[i][0]}")
+        
+        print(f"Please select a calendar by indicating an index 1 through {n}: ")
+        index = int(input()) - 1
+        
+        if index >= 0 and index < n:
+            self.calendar_id = self.calendar_ids[index][1]
+            print(f"Calendar successfuly set to {self.calendar_ids[index][0]}!")
+        else: 
+            print("Invalid calendar!")

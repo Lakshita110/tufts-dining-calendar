@@ -36,10 +36,11 @@ class TuftsDining():
         if self.location != None:
             date = self.date.split('-')
             url = f"http://menus.tufts.edu/FoodPro%203.1.NET/shortmenu.aspx?sName=TUFTS+DINING&"
-            url += f"locationNum={self.location[1]}&locationName={self.location[0]}&naFlag=1"
+            url += f"locationNum={self.location[1]}&locationName={self.location[0].replace(' ', '+')}&naFlag=1"
             url += f"&WeeksMenus=This+Week%27s+Menus&myaction=read&dtdate={date[1]}%2f{date[2]}%2f{date[0]}"
             self.url = url
             print("Successfully set URL!")
+            print(url)
 
         else: 
             print("No location set!")
@@ -81,10 +82,7 @@ class TuftsDining():
 
                 except:
                     continue
-            if response == {}:
-                print("No food there today!")
-            else:
-                self.data=response
+            self.data = response
         else:
             print("No URL set!")
             return None
@@ -98,7 +96,7 @@ class TuftsDining():
                     text += item[0] + "\n"
         else:
             print("No data obtained yet!")
-            return text
+        return text
         
     def get_data(self, date):
         self.date = date
