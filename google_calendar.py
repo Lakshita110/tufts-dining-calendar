@@ -17,11 +17,9 @@ class GoogleCalendar():
         self.creds = None
         self.service = None
         self.calendar_ids = []
+        self.build()
 
     def build(self):
-        """
-        Creates a connection to a Google Calendar by authenticating user
-        """
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
@@ -45,28 +43,7 @@ class GoogleCalendar():
             self.service = build('calendar', 'v3', credentials=creds)
         except HttpError as error:
             print('An error occurred: %s' % error)
-
-    def insert_event(self, event):
-        """
-        Inserts event 
-        """
-        try: 
-            event = self.service.events().insert(calendarId='c_213014ceec5f49cfe5629b640b346cad447576e4f470a827496a46a5c5db208d@group.calendar.google.com', body=event).execute()
-            print('Event created: %s' % (event.get('htmlLink')))
-
-        except HttpError as error:
-            print('An error occurred: %s' % error)
-
-    def get_calendar_ids(self):
-        page_token = None
-        while True:
-            calendar_list = self.service.calendarList().list(pageToken=page_token).execute()
-            for entry in calendar_list['items']:
-                self.calendar_ids.append([entry['summary'], entry['id']])
-            page_token = calendar_list.get('nextPageToken')
-            if not page_token:
-                break
-
+    
     def create_event(self, summary, description, date):
         event = {
         'summary': summary,
@@ -82,9 +59,20 @@ class GoogleCalendar():
         }
         return event
 
-def main():
-    MyCalendar = GoogleCalendar()
-    MyCalendar.build()
+    def insert_event(self, event):
+        try: 
+            event = self.service.events().insert(calendarId='c_213014ceec5f49cfe5629b640b346cad447576e4f470a827496a46a5c5db208d@group.calendar.google.com', body=event).execute()
+            print('Event created: %s' % (event.get('htmlLink')))
 
-if __name__ == '__main__':
-    main()
+        except HttpError as error:
+            print('An error occurred: %s' % error)
+    
+    def get_calendar_ids(self):
+        page_token = None
+        while True:
+            calendar_list = self.service.calendarList().list(pageToken=page_token).execute()
+            for entry in calendar_list['items']:
+                self.calendar_ids.append([entry['summary'], entry['id']])
+            page_token = calendar_list.get('nextPageToken')
+            if not page_token:
+                break
