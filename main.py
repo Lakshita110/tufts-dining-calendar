@@ -3,8 +3,27 @@ from bs4 import BeautifulSoup
 from datetime import datetime, timedelta 
 import re 
 import pandas as pd 
+############
 
-doc = requests.get('https://menus.tufts.edu/FoodPro%203.1.NET/shortmenu.aspx?sName=TUFTS+DINING&locationNum=11&locationName=Dewick-MacPhie+Dining+Center&naFlag=1&WeeksMenus=This+Week%27s+Menus&myaction=read&dtdate=7%2f27%2f2023')
+LOCATIONS = {"Carmichael Dining Center" : "09", 
+            "Dewick Dining Center" : "11",
+            "The Commons Marketplace" : "55",
+            "Hodgdon Food On-the-Run" : "14",
+            "Pax et Lox Glatt Kosher Deli" : "27",
+            "Kindlevan Cafe" : "03"}
+
+def getUrl():
+    year = datetime.today().strftime("%y")
+    month = datetime.today().strftime("%m")
+    day = datetime.today().strftime("%d")
+    url = f"http://menus.tufts.edu/FoodPro%203.1.NET/shortmenu.aspx?sName=TUFTS+DINING&"
+    url += f"locationNum=11&locationName=Dewing Dining Center&naFlag=1"
+    url += f"&WeeksMenus=This+Week%27s+Menus&myaction=read&dtdate={month}%2f{day}%2f{year}"
+    return url
+
+print(getUrl())
+
+doc = requests.get(getUrl())
 soup = BeautifulSoup(doc.text, features="html.parser")
 
 
@@ -31,13 +50,13 @@ for div in soup.findAll("div"):
             if image != None:
                 image = str(image)
                 if "Vegan" in image:
-                    print("True")
                     food_item[1] = True
                 elif "Vegetarian" in image:
                     food_item[2] = True
                 elif "Halal" in image:
                     food_item[3] = True
             category_dict[category].append(food_item)
+
     except:
         continue
 
