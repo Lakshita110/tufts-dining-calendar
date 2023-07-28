@@ -17,9 +17,9 @@ class GoogleCalendar():
         self.creds = None
         self.service = None
         self.calendar_ids = []
-        self.calendar_id = ""
+        self.calendar_id = "c_213014ceec5f49cfe5629b640b346cad447576e4f470a827496a46a5c5db208d@group.calendar.google.com"
         self.__build()
-        self.__get_calendar_ids()
+        self.get_calendar_ids()
 
     def __build(self):
         creds = None
@@ -53,11 +53,11 @@ class GoogleCalendar():
         'description': description,
         'start': {
             'date': date,
-            # 'timeZone': 'America/Los_Angeles',
+            'timeZone': 'America/Los_Angeles',
         },
         'end': {
             'date': date,
-            # 'timeZone': 'America/Los_Angeles',
+            'timeZone': 'America/Los_Angeles',
         },
         }
         return event
@@ -70,7 +70,7 @@ class GoogleCalendar():
         except HttpError as error:
             print('An error occurred: %s' % error)
     
-    def __get_calendar_ids(self):
+    def get_calendar_ids(self):
         page_token = None
         while True:
             calendar_list = self.service.calendarList().list(pageToken=page_token).execute()
@@ -79,17 +79,3 @@ class GoogleCalendar():
             page_token = calendar_list.get('nextPageToken')
             if not page_token:
                 break
-
-    def set_calendar_id(self):
-        n = len(self.calendar_ids)
-        for i in range(n):
-            print(f"({i+1}): {self.calendar_ids[i][0]}")
-        
-        print(f"Please select a calendar by indicating an index 1 through {n}: ")
-        index = int(input()) - 1
-        
-        if index >= 0 and index < n:
-            self.calendar_id = self.calendar_ids[index][1]
-            print(f"Calendar successfuly set to {self.calendar_ids[index][0]}!")
-        else: 
-            print("Invalid calendar!")
