@@ -8,16 +8,17 @@ def main():
     date = datetime.today().strftime("%Y-%m-%d")
     dining = TuftsDining()
     calendar = GoogleCalendar()
-    locationIndex = 1
+    locations = [0,1]
 
-    text = dining.get_data(locationIndex, date) 
-    if text: 
-        description = dining.LOCATIONS[locationIndex][0].upper()
-        description +=  "\n" + "\n" + text
-        event = calendar.create_event(summary="Today's Meal", description=description, date=date)
-        calendar.insert_event(event)
-    else:
-        print(f"Not creating event because is not serving food :(")
+    for index in locations:
+        text = dining.get_data(index, date) 
+        if text: 
+            location = dining.LOCATIONS[index]
+            summary = f"{location[0].split()[0]} Menu"
+            event = calendar.create_event(summary=summary, description=text, date=date)
+            calendar.insert_event(event)
+        else:
+            print(f"Not creating event because is not serving food :(")
 
 if __name__ == '__main__':
     main()

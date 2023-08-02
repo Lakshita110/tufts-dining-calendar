@@ -43,7 +43,6 @@ class GoogleCalendar():
         #Build calendar service
         try:
             self.service = build('calendar', 'v3', credentials=creds)
-            print("Successfully built calendar connection!")
         except HttpError as error:
             print('An error occurred: %s' % error)
                 
