@@ -56,6 +56,8 @@ class TuftsDining():
                     response[menu_type].append(food_item)
             except:
                 continue
+
+        print(response)
         return response
 
     def __format_data(self, data):
