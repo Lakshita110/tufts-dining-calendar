@@ -1,6 +1,6 @@
 ## About The Project
 
-This is currently a CLI tool built in Python which allows students to add the Tufts dining menu into their Google Calendar. 
+This is currently a CLI tool built in Python which allows students to add the Tufts dining menu into their Google Calendar. Now **archived** because of an update to the Tufts Dining website.
 
 ### Built With
 * Python
